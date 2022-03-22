@@ -6,9 +6,9 @@ const app = require('../app');
 
 const request = supertest(app);
 
-describe('/test endpoint', () => {
+describe('/api/v1/test: Test Endpoint', () => {
   it('should return a response Hello world', async () => {
-    const response = await request.get('/test');
+    const response = await request.get('/api/v1/test');
     expect(response.status).toBe(200);
     expect(response.text).toBe('Hello world');
   });
