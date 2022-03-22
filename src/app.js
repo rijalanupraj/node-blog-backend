@@ -10,6 +10,9 @@ const { APP } = require('./config/keys');
 // Express App
 const app = express();
 
+// Passport Config
+require('./config/passport')(app);
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
