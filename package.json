@@ -19,7 +19,8 @@
     "helmet": "^5.0.2",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.2.7"
+    "mongoose": "^6.2.7",
+    "mongoose-slug-generator": "^1.0.4"
   },
   "devDependencies": {
     "jest": "^27.5.1",
