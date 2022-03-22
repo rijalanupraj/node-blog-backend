@@ -4,6 +4,7 @@ const express = require('express');
 // Internal Dependencies
 const userController = require('./user.controller');
 const isAuth = require('../middleware/auth');
+const upload = require('../config/multer');
 
 // Router Setup
 const Router = express.Router();
@@ -49,5 +50,24 @@ Router.put('/:id/follow', isAuth, userController.followUser);
  * @access  Private
  */
 Router.put('/:id/unfollow', isAuth, userController.unFollowUser);
+
+/*
+ * @route   PUT /profile-photo
+ * @desc    Update Photo
+ * @access  Private
+ */
+Router.put(
+  '/profile-photo',
+  isAuth,
+  upload.single('profilePhoto'),
+  userController.updateProfilePicture
+);
+
+/*
+ * @route   DELETE /profile-photo
+ * @desc    Delete User Profile Photo
+ * @access  Private
+ */
+Router.delete('/profile-photo', isAuth, userController.removeProfilePicture);
 
 module.exports = Router;

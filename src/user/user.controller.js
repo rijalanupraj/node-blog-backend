@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const User = require('../user/user.model');
 const ExpressError = require('../helpers/expressError');
 const asyncWrapper = require('../middleware/async');
+const cloudinary = require('../config/cloudinary');
 
 // Register User
 const getCurrentUser = asyncWrapper(async (req, res, next) => {
@@ -73,7 +74,7 @@ const deleteUser = asyncWrapper(async (req, res, next) => {
 
   await User.findByIdAndDelete(id);
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: 'User deleted successfully'
   });
@@ -98,7 +99,7 @@ const getUserById = asyncWrapper(async (req, res, next) => {
     followings: user.followings
   };
 
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     user: userData,
     message: 'User found successfully'
@@ -136,12 +137,12 @@ const followUser = asyncWrapper(async (req, res, next) => {
         followers: id
       }
     });
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'User followed successfully'
     });
   } else {
-    res.status(403).json({ success: false, message: 'User already followed' });
+    return next(new ExpressError('User already followed', 403));
   }
 });
 
@@ -176,13 +177,98 @@ const unFollowUser = asyncWrapper(async (req, res, next) => {
         followers: id
       }
     });
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: 'User unfollowed successfully'
     });
   } else {
-    res.status(403).json({ success: false, message: "You don't Follow this user" });
+    return next(new ExpressError("You don't follow this user", 403));
   }
+});
+
+// Update User Profile Picture
+const updateProfilePicture = asyncWrapper(async (req, res, next) => {
+  const { id } = req.user;
+  const findUser = await User.findById(id);
+  if (!findUser) {
+    return next(new ExpressError('User not found', 404));
+  }
+  const profileImage = req.file;
+
+  let imageUrl = '';
+  let imageKey = '';
+  if (profileImage) {
+    const result = await cloudinary.uploader.upload(profileImage.path, {
+      folder: 'blogam/users'
+    });
+    imageUrl = result.secure_url;
+    imageKey = result.public_id;
+    if (findUser.profilePhoto.hasPhoto) {
+      await cloudinary.uploader.destroy(findUser.profilePhoto.filename);
+    }
+
+    const updateUser = await User.findByIdAndUpdate(
+      id,
+      {
+        profilePhoto: {
+          url: imageUrl,
+          filename: imageKey,
+          hasPhoto: true
+        }
+      },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: 'Profile picture updated successfully',
+      user: {
+        id: updateUser.id,
+        username: updateUser.username,
+        email: updateUser.email,
+        profilePhoto: updateUser.profilePhoto,
+        followers: updateUser.followers,
+        followings: updateUser.followings
+      }
+    });
+  }
+
+  return next(new ExpressError('No Image Provided', 400));
+});
+
+// Delete User Profile Picture
+const removeProfilePicture = asyncWrapper(async (req, res, next) => {
+  const { id } = req.user;
+
+  const findUser = await User.findById(id);
+  if (!findUser) {
+    return next(new ExpressError('User not found', 404));
+  }
+  if (!findUser.profilePhoto.hasPhoto) {
+    return next(new ExpressError('No profile picture found', 400));
+  }
+
+  await cloudinary.uploader.destroy(findUser.profilePhoto.filename);
+  findUser.profilePhoto = {
+    url: '',
+    filename: '',
+    hasPhoto: false
+  };
+  await findUser.save();
+
+  // Response
+  res.status(200).json({
+    success: true,
+    message: 'Profile picture removed successfully',
+    user: {
+      id: findUser.id,
+      username: findUser.username,
+      email: findUser.email,
+      profilePhoto: findUser.profilePhoto,
+      followers: findUser.followers,
+      followings: findUser.followings
+    }
+  });
 });
 
 module.exports = {
@@ -191,5 +277,7 @@ module.exports = {
   deleteUser,
   getUserById,
   followUser,
-  unFollowUser
+  unFollowUser,
+  updateProfilePicture,
+  removeProfilePicture
 };

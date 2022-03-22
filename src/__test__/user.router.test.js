@@ -1,10 +1,12 @@
 // External Import
 const mongoose = require('mongoose');
 const supertest = require('supertest');
+const fs = require('fs');
 
 // Internal Import
 const app = require('../app');
 const { APP } = require('../config/keys');
+const cloudinary = require('../config/cloudinary');
 
 const request = supertest(app);
 
@@ -246,6 +248,129 @@ describe('PUT user/:id/unfollow - Test User Unfollow Route', () => {
     expect(response.body).toEqual({
       success: true,
       message: expect.any(String)
+    });
+  });
+});
+
+describe('PUT -  user/profile-photo Update Profile Photo', () => {
+  it('When token is not provided', async () => {
+    const response = await request.put(`${APP.BASE_API_URL}/user/profile-photo`);
+    expect(response.status).toBe(401);
+  });
+
+  it('When image is not provided', async () => {
+    // User Register
+    const userResponse = await request.post(`${APP.BASE_API_URL}/auth/register`).send({
+      username: 'test13',
+      email: 'test13@test.com',
+      password: 'Test@123'
+    });
+    const TOKEN = userResponse.body.token;
+
+    const response = await request
+      .put(`${APP.BASE_API_URL}/user/profile-photo`)
+      .set('Authorization', `Bearer ${TOKEN}`);
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      success: false,
+      message: expect.any(String),
+      statusCode: 400
+    });
+  });
+
+  it('Should Return 200 when image is provided', async () => {
+    // User Register
+    const userResponse = await request.post(`${APP.BASE_API_URL}/auth/register`).send({
+      username: 'test18',
+      email: 'test18@test.com',
+      password: 'Test@123'
+    });
+    const TOKEN = userResponse.body.token;
+
+    const response = await request
+      .put(`${APP.BASE_API_URL}/user/profile-photo`)
+      .set('Authorization', `Bearer ${TOKEN}`)
+      .set('content-type', 'multipart/form-data')
+      .attach(
+        'profilePhoto',
+        fs.readFileSync(`${__dirname}/testimage/profile.png`),
+        'testimage/profile.png'
+      );
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      success: true,
+      message: expect.any(String),
+      user: {
+        id: expect.any(String),
+        username: expect.any(String),
+        email: expect.any(String),
+        profilePhoto: {
+          url: expect.any(String),
+          filename: expect.any(String),
+          hasPhoto: true
+        },
+        followings: expect.any(Array),
+        followers: expect.any(Array)
+      }
+    });
+  });
+});
+
+describe('DELETE -  user/profile-photo Delete Profile Photo', () => {
+  it('When token is not provided', async () => {
+    const response = await request.delete(`${APP.BASE_API_URL}/user/profile-photo`);
+    expect(response.status).toBe(401);
+  });
+
+  it('Should Return 200 ', async () => {
+    // User Register
+    const userResponse = await request.post(`${APP.BASE_API_URL}/auth/login`).send({
+      emailOrUsername: 'test18',
+      password: 'Test@123'
+    });
+    const TOKEN = userResponse.body.token;
+
+    const response = await request
+      .delete(`${APP.BASE_API_URL}/user/profile-photo`)
+      .set('Authorization', `Bearer ${TOKEN}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      success: true,
+      message: expect.any(String),
+      user: {
+        id: expect.any(String),
+        username: expect.any(String),
+        email: expect.any(String),
+        profilePhoto: {
+          url: expect.any(String),
+          filename: expect.any(String),
+          hasPhoto: false
+        },
+        followings: expect.any(Array),
+        followers: expect.any(Array)
+      }
+    });
+  });
+
+  it('When No Image it should return 400 not found error', async () => {
+    // User Register
+    const userResponse = await request.post(`${APP.BASE_API_URL}/auth/login`).send({
+      emailOrUsername: 'test18',
+      password: 'Test@123'
+    });
+    const TOKEN = userResponse.body.token;
+
+    const response = await request
+      .delete(`${APP.BASE_API_URL}/user/profile-photo`)
+      .set('Authorization', `Bearer ${TOKEN}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      success: false,
+      message: expect.any(String),
+      statusCode: 400
     });
   });
 });

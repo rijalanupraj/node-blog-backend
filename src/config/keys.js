@@ -10,5 +10,10 @@ module.exports = {
   JWT: {
     SECRET: process.env.JWT_SECRET,
     TOKEN_LIFE: '7d'
+  },
+  CLOUDINARY: {
+    CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+    API_KEY: process.env.CLOUDINARY_API_KEY,
+    API_SECRET: process.env.CLOUDINARY_API_SECRET
   }
 };
