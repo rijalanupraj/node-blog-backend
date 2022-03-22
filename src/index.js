@@ -4,6 +4,7 @@ const dotenv = require('dotenv').config();
 
 // Internal Import
 const { PORT } = require('./config/keys');
+require('./config/connectdb');
 
 // Create HTTP server.
 const server = http.createServer();
