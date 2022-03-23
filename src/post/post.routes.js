@@ -37,4 +37,32 @@ Router.delete('/:id', isAuth, postController.deletePost);
  */
 Router.get('/:id', postController.getPostById);
 
+/*
+ * @route   PUT /:id/like
+ * @desc    Like Dislike Toggle
+ * @access  Private
+ */
+Router.put('/:id/like', isAuth, postController.likeDislikeToggle);
+
+/*
+ * @route   GET /user/timeline
+ * @desc    Get all the post of following users
+ * @access  Private
+ */
+Router.get('/user/timeline', isAuth, postController.getTimelinePosts);
+
+/*
+ * @route   GET /profile/:username
+ * @desc    Get all the post of the user with username
+ * @access  Private
+ */
+Router.get('/profile/:username', postController.getAllPostsByUsername);
+
+/*
+ * @route   GET /posts
+ * @desc    Get All Public Posts
+ * @access  Public
+ */
+Router.get('/list/public', postController.getAllPublicPosts);
+
 module.exports = Router;

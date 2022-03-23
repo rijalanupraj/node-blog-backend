@@ -171,6 +171,99 @@ describe('GET post/:id - Get Post By Id Test', () => {
   });
 });
 
+// Like Dislike Post Toggle Test
+describe('PUT post/:id/like - Like/Unlike Post Test', () => {
+  it('When the token is not provided', async () => {
+    const response = await request.put(`${APP.BASE_API_URL}/post/${POST_ID}/like`);
+    expect(response.status).toBe(401);
+  });
+
+  it('Get 200 and update Post', async () => {
+    // First we need a token to be provided
+    const payload = {
+      emailOrUsername: 'test1',
+      password: 'Test@123'
+    };
+
+    const regResponse = await request.post(`${APP.BASE_API_URL}/auth/login`).send(payload);
+    expect(regResponse.status).toBe(200);
+    const token = regResponse.body.token;
+
+    // Now we have the token, we can test create post
+    const response = await request
+      .put(`${APP.BASE_API_URL}/post/${POST_ID}/like`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      success: true,
+      message: expect.any(String)
+    });
+  });
+});
+
+// Timeline Post Test
+describe('GET post/user/timeline - Get Timeline Post Test', () => {
+  it('401 When Token is not passed', async () => {
+    const response = await request.get(`${APP.BASE_API_URL}/post/user/timeline`);
+    expect(response.status).toBe(401);
+  });
+
+  it('Get 200 and update Post', async () => {
+    // Now we have the token, we can test create post
+    // First we need a token to be provided
+    const payload = {
+      emailOrUsername: 'test1',
+      password: 'Test@123'
+    };
+
+    const regResponse = await request.post(`${APP.BASE_API_URL}/auth/login`).send(payload);
+    expect(regResponse.status).toBe(200);
+    const token = regResponse.body.token;
+
+    const response = await request
+      .get(`${APP.BASE_API_URL}/post/user/timeline`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      success: true,
+      message: expect.any(String),
+      posts: expect.any(Array)
+    });
+  });
+});
+
+// All Posts Of a User
+describe('GET post/profile/:username - Get All Posts Of a User Test', () => {
+  it('Get 200 and All Posts of the User', async () => {
+    // Now we have the token, we can test create post
+    const response = await request.get(`${APP.BASE_API_URL}/post/profile/test1`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      success: true,
+      message: expect.any(String),
+      posts: expect.any(Array)
+    });
+  });
+});
+
+// All Public Post
+describe('GET post/list/public - Get All Public Posts', () => {
+  it('Get 200 and All Public Posts ', async () => {
+    // Now we have the token, we can test create post
+    const response = await request.get(`${APP.BASE_API_URL}/post/list/public`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      success: true,
+      message: expect.any(String),
+      posts: expect.any(Array)
+    });
+  });
+});
+
 // Post Delete
 describe('DELETE post/:id - Delete Post Test', () => {
   it('When the token is not provided', async () => {

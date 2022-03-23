@@ -191,9 +191,122 @@ const getPostById = asyncWrapper(async (req, res, next) => {
   });
 });
 
+// Like Dislike
+const likeDislikeToggle = asyncWrapper(async (req, res, next) => {
+  const { id } = req.user;
+  const postId = req.params.id;
+
+  if (!mongoId.isValid(id) || !mongoId.isValid(postId)) {
+    return next(new ExpressError('Invalid Id', 400));
+  }
+
+  const findUser = await User.findById(id);
+  const findPost = await Post.findById(postId);
+
+  if (!findUser) {
+    return next(new ExpressError('User not found', 404));
+  }
+  if (!findPost) {
+    return next(new ExpressError('Post not found', 404));
+  }
+
+  if (!findPost.likes.includes(id)) {
+    await findPost.updateOne({
+      $push: {
+        likes: id
+      }
+    });
+    res.status(200).json({
+      success: true,
+      message: 'Post liked successfully'
+    });
+  } else {
+    await findPost.updateOne({
+      $pull: {
+        likes: id
+      }
+    });
+    res.status(200).json({
+      success: true,
+      message: 'Post disliked successfully'
+    });
+  }
+});
+
+// Timeline Post of User followed
+const getTimelinePosts = asyncWrapper(async (req, res, next) => {
+  const { id } = req.user;
+
+  if (!mongoId.isValid(id)) {
+    return next(new ExpressError('Invalid Id', 400));
+  }
+
+  const findUser = await User.findById(id);
+  if (!findUser) {
+    return next(new ExpressError('User not found', 404));
+  }
+
+  const followedUsersPosts = await Promise.all(
+    findUser.followings.map(async userId => {
+      return Post.find({
+        author: userId,
+        status: 'public',
+        isActive: true
+      });
+    })
+  );
+
+  return res.status(200).json({
+    success: true,
+    message: 'Posts found successfully',
+    posts: followedUsersPosts
+  });
+});
+
+const getAllPostsByUsername = asyncWrapper(async (req, res, next) => {
+  const { username } = req.params;
+  if (!username) {
+    return next(new ExpressError('Invalid Username', 400));
+  }
+
+  const findUser = await User.findOne({ username });
+  if (!findUser) {
+    return next(new ExpressError('User not found', 404));
+  }
+
+  const userPosts = await Post.find({
+    author: findUser._id,
+    status: 'public',
+    isActive: true
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: 'Posts found successfully',
+    posts: userPosts
+  });
+});
+
+const getAllPublicPosts = asyncWrapper(async (req, res, next) => {
+  const posts = await Post.find({
+    status: 'public',
+    isActive: true
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: 'Posts found successfully',
+    posts
+  });
+});
+
 module.exports = {
   createPost,
   updatePost,
   deletePost,
-  getPostById
+  getPostById,
+  likeDislikeToggle,
+  getTimelinePosts,
+  getAllPostsByUsername,
+  getAllPublicPosts
 };
