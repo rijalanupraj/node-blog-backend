@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 // Internal Import
 const User = require('../user/user.model');
-const ExpressError = require('../error/expressError');
+const ExpressError = require('../helpers/expressError');
 const asyncWrapper = require('../middleware/async');
 const UserValidation = require('../user/user.validation');
 const { JWT } = require('../config/keys');

@@ -1,6 +1,7 @@
 // External Dependencies
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const { boolean } = require('joi');
 
 const userSchema = new mongoose.Schema(
   {
@@ -19,7 +20,31 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       minlength: 6
-    }
+    },
+    profilePhoto: {
+      hasPhoto: {
+        type: Boolean,
+        default: false
+      },
+      url: String,
+      filename: String
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false
+    },
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    ],
+    followings: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    ]
   },
   { timestamps: true }
 );

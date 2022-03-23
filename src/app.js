@@ -10,6 +10,9 @@ const { APP } = require('./config/keys');
 // Express App
 const app = express();
 
+// Passport Config
+require('./config/passport')(app);
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,7 +26,7 @@ app.use(`${APP.BASE_API_URL}`, v1Routes);
 app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
   if (!err.message) err.message = 'Something went wrong';
-  res.status(statusCode).json({ statusCode, success: false, errorMessage: err.message });
+  res.status(statusCode).json({ statusCode, success: false, message: err.message });
 });
 
 module.exports = app;
