@@ -4,12 +4,20 @@ const router = require('express').Router();
 // Internal Dependencies
 const authRoutes = require('../user/auth.routes');
 const userRoutes = require('../user/user.routes');
+const postRoutes = require('../post/post.routes');
+const categoryRoutes = require('../category/category.routes');
 
 // Auth Routes
 router.use('/auth', authRoutes);
 
 // User Routes
 router.use('/user', userRoutes);
+
+// Post Routes
+router.use('/post', postRoutes);
+
+// Category Routes
+router.use('/category', categoryRoutes);
 
 // Test Route for Checking whether the app is working or not
 router.use('/test', (req, res) => {

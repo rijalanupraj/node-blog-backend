@@ -36,7 +36,7 @@ const PostSchema = new Schema(
     },
     image: {
       url: String,
-      key: String
+      filename: String
     },
     author: {
       type: Schema.Types.ObjectId,
@@ -49,7 +49,19 @@ const PostSchema = new Schema(
     allowComments: {
       type: Boolean,
       default: true
-    }
+    },
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+      }
+    ],
+    categories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Category'
+      }
+    ]
   },
   {
     timestamps: true

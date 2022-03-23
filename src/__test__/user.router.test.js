@@ -253,6 +253,7 @@ describe('PUT user/:id/unfollow - Test User Unfollow Route', () => {
 });
 
 describe('PUT -  user/profile-photo Update Profile Photo', () => {
+  jest.setTimeout(13000);
   it('When token is not provided', async () => {
     const response = await request.put(`${APP.BASE_API_URL}/user/profile-photo`);
     expect(response.status).toBe(401);
