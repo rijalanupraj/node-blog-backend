@@ -49,6 +49,20 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+//Remove refreshToken from the response
+userSchema.set('toJSON', {
+  transform: function (doc, ret, options) {
+    delete ret.password;
+    delete ret.email;
+    delete ret.__v;
+    delete ret.profilePhoto.filename;
+    delete ret.createdAt;
+    delete ret.updatedAt;
+    delete ret.isAdmin;
+    return ret;
+  }
+});
+
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) return;
   const salt = await bcrypt.genSalt(8);
