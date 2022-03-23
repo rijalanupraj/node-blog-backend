@@ -68,6 +68,7 @@ describe('POST post/ - Create Post Test', () => {
         allowComments: true,
         likes: expect.any(Array),
         categories: expect.any(Array),
+        comments: expect.any(Array),
         _id: expect.any(String),
         author: expect.any(String),
         createdAt: expect.any(String),
@@ -123,6 +124,7 @@ describe('PUT post/:id - Update Post Test', () => {
         allowComments: updatedPayload.allowComments,
         likes: expect.any(Array),
         categories: expect.any(Array),
+        comments: expect.any(Array),
         _id: expect.any(String),
         author: expect.any(String),
         createdAt: expect.any(String),
@@ -157,6 +159,7 @@ describe('GET post/:id - Get Post By Id Test', () => {
         allowComments: expect.any(Boolean),
         likes: expect.any(Array),
         categories: expect.any(Array),
+        comments: expect.any(Array),
         _id: expect.any(String),
         author: {
           profilePhoto: expect.any(Object),

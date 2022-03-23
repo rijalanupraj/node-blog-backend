@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test JWT_SECRET=secret CLOUDINARY_CLOUD_NAME=jelomiy CLOUDINARY_API_KEY=553171644878255 CLOUDINARY_API_SECRET=1i2ZCE_E5ot5pBiyONpb4WgF23E jest",
+    "test": "NODE_ENV=test JWT_SECRET=secret CLOUDINARY_CLOUD_NAME=jelomiy CLOUDINARY_API_KEY=553171644878255 CLOUDINARY_API_SECRET=1i2ZCE_E5ot5pBiyONpb4WgF23E jest --collectCoverage --coverage",
     "dev": "nodemon src/index.js",
     "start": "node src/index.js"
   },
