@@ -55,6 +55,12 @@ const PostSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: 'User'
       }
+    ],
+    categories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Category'
+      }
     ]
   },
   {
