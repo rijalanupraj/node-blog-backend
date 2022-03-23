@@ -9,6 +9,7 @@ const ExpressError = require('../helpers/expressError');
 const asyncWrapper = require('../middleware/async');
 const cloudinary = require('../config/cloudinary');
 const PostValidation = require('../post/post.validation');
+const Category = require('../category/category.model');
 
 // Create New Post
 const createPost = asyncWrapper(async (req, res, next) => {
@@ -30,6 +31,10 @@ const createPost = asyncWrapper(async (req, res, next) => {
   }
 
   const { title, content, status, allowComments } = req.body;
+  let categories;
+  if (req.body.categories) {
+    categories = JSON.parse(req.body.categories);
+  }
 
   const newPost = new Post({
     title,
@@ -37,6 +42,14 @@ const createPost = asyncWrapper(async (req, res, next) => {
     status,
     allowComments
   });
+  if (categories) {
+    categories.map(categoryId => {
+      if (!mongoId.isValid(categoryId)) {
+        return next(new ExpressError('Invalid Category Id', 400));
+      }
+      newPost.categories.push(categoryId);
+    });
+  }
 
   let imageUrl = '';
   let imageKey = '';
@@ -80,6 +93,10 @@ const updatePost = asyncWrapper(async (req, res, next) => {
   }
 
   const { title, content, status, allowComments } = req.body;
+  let categories;
+  if (req.body.categories) {
+    categories = JSON.parse(req.body.categories);
+  }
 
   const post = await Post.findById(postId);
 
@@ -105,6 +122,16 @@ const updatePost = asyncWrapper(async (req, res, next) => {
 
   if (allowComments === true || allowComments === false) {
     post.allowComments = allowComments;
+  }
+
+  if (categories) {
+    post.categories = [];
+    categories.map(categoryId => {
+      if (!mongoId.isValid(categoryId)) {
+        return next(new ExpressError('Invalid Id', 400));
+      }
+      post.categories.push(categoryId);
+    });
   }
 
   let imageUrl = '';
@@ -288,10 +315,30 @@ const getAllPostsByUsername = asyncWrapper(async (req, res, next) => {
 });
 
 const getAllPublicPosts = asyncWrapper(async (req, res, next) => {
-  const posts = await Post.find({
-    status: 'public',
-    isActive: true
-  });
+  const category = req.query.category;
+
+  let posts;
+
+  if (category) {
+    const findCategory = await Category.findOne({ name: category });
+    if (!findCategory) {
+      return next(new ExpressError('Category not found', 404));
+    }
+    posts = await Post.find({
+      status: 'public',
+      isActive: true,
+      categories: {
+        $in: [findCategory._id]
+      }
+    });
+  }
+
+  if (!category) {
+    posts = await Post.find({
+      status: 'public',
+      isActive: true
+    });
+  }
 
   return res.status(200).json({
     success: true,

@@ -67,6 +67,7 @@ describe('POST post/ - Create Post Test', () => {
         isActive: true,
         allowComments: true,
         likes: expect.any(Array),
+        categories: expect.any(Array),
         _id: expect.any(String),
         author: expect.any(String),
         createdAt: expect.any(String),
@@ -121,6 +122,7 @@ describe('PUT post/:id - Update Post Test', () => {
         isActive: true,
         allowComments: updatedPayload.allowComments,
         likes: expect.any(Array),
+        categories: expect.any(Array),
         _id: expect.any(String),
         author: expect.any(String),
         createdAt: expect.any(String),
@@ -154,6 +156,7 @@ describe('GET post/:id - Get Post By Id Test', () => {
         isActive: expect.any(Boolean),
         allowComments: expect.any(Boolean),
         likes: expect.any(Array),
+        categories: expect.any(Array),
         _id: expect.any(String),
         author: {
           profilePhoto: expect.any(Object),
@@ -250,10 +253,10 @@ describe('GET post/profile/:username - Get All Posts Of a User Test', () => {
 });
 
 // All Public Post
-describe('GET post/list/public - Get All Public Posts', () => {
+describe('GET post/ - Get All Public Posts', () => {
   it('Get 200 and All Public Posts ', async () => {
     // Now we have the token, we can test create post
-    const response = await request.get(`${APP.BASE_API_URL}/post/list/public`);
+    const response = await request.get(`${APP.BASE_API_URL}/post/`);
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({

@@ -63,6 +63,6 @@ Router.get('/profile/:username', postController.getAllPostsByUsername);
  * @desc    Get All Public Posts
  * @access  Public
  */
-Router.get('/list/public', postController.getAllPublicPosts);
+Router.get('', postController.getAllPublicPosts);
 
 module.exports = Router;

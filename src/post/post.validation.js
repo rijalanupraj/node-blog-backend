@@ -5,7 +5,8 @@ const PostValidation = Joi.object({
   title: Joi.string().required(),
   content: Joi.string().required(),
   status: Joi.string().valid('public', 'private'),
-  allowComments: Joi.boolean()
+  allowComments: Joi.boolean(),
+  categories: Joi.string()
 });
 
 module.exports = PostValidation;
