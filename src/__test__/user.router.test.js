@@ -51,9 +51,15 @@ describe('GET user/ - Test Current User Route', () => {
     expect(response.body).toEqual({
       success: true,
       user: {
-        id: expect.any(String),
+        _id: expect.any(String),
         username: expect.any(String),
-        email: expect.any(String)
+        email: expect.any(String),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        followers: expect.any(Array),
+        followings: expect.any(Array),
+        isAdmin: false,
+        profilePhoto: expect.any(Object)
       }
     });
   });
@@ -70,18 +76,17 @@ describe('GET user/:id - Test Get User By Id Route', () => {
   it('Get 200 and user detail', async () => {
     // First we need a token to be provided
     const payload = {
-      username: 'test11',
-      email: 'test11@test.com',
+      username: 'test21',
+      email: 'test21@test.com',
       password: 'Test@123'
     };
 
     const regResponse = await request.post(`${APP.BASE_API_URL}/auth/register`).send(payload);
     expect(regResponse.status).toBe(201);
-    const userId = regResponse.body.user.id;
+    const userId = regResponse.body.user._id;
 
     // Now we have the token, we can test current user
     const response = await request.get(`${APP.BASE_API_URL}/user/${userId}`);
-
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
       success: true,
@@ -129,9 +134,15 @@ describe('PUT user/ - Test User Update Route', () => {
       success: true,
       message: expect.any(String),
       user: {
-        id: expect.any(String),
+        _id: expect.any(String),
         username: 'test10',
-        email: 'test10@test.com'
+        email: 'test10@test.com',
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        followers: expect.any(Array),
+        followings: expect.any(Array),
+        isAdmin: false,
+        profilePhoto: expect.any(Object)
       }
     });
   });
@@ -197,7 +208,7 @@ describe('PUT user/:id/follow - Test User Follow Route', () => {
       .send(secondUserPayload);
 
     const firstUserToken = firstUser.body.token;
-    const secondUserId = secondUser.body.user.id;
+    const secondUserId = secondUser.body.user._id;
 
     // Now we have the token, we can test current user
     const response = await request
@@ -237,7 +248,7 @@ describe('PUT user/:id/unfollow - Test User Unfollow Route', () => {
     const secondUser = await request.post(`${APP.BASE_API_URL}/auth/login`).send(secondUserPayload);
 
     const firstUserToken = firstUser.body.token;
-    const secondUserId = secondUser.body.user.id;
+    const secondUserId = secondUser.body.user._id;
 
     // Now we have the token, we can test current user
     const response = await request

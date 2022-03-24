@@ -17,15 +17,9 @@ const getCurrentUser = asyncWrapper(async (req, res, next) => {
     return next(new ExpressError('User not found', 404));
   }
 
-  const userData = {
-    id: user.id,
-    username: user.username,
-    email: user.email
-  };
-
   res.status(200).json({
     success: true,
-    user: userData
+    user: user.getPrivateProfile()
   });
 });
 
@@ -48,15 +42,9 @@ const updateUser = asyncWrapper(async (req, res, next) => {
 
   const user = await User.findByIdAndUpdate(id, req.body, { new: true });
 
-  const userData = {
-    id: user.id,
-    username: user.username,
-    email: user.email
-  };
-
   res.status(200).json({
     success: true,
-    user: userData,
+    user: user.getPrivateProfile(),
     message: 'User updated successfully'
   });
 });

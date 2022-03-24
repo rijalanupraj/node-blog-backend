@@ -41,9 +41,15 @@ describe('/auth/register - Test Register Endpoint', () => {
       success: true,
       token: expect.any(String),
       user: {
-        id: expect.any(String),
+        _id: expect.any(String),
         username: payload.username,
-        email: payload.email
+        email: payload.email,
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        followers: expect.any(Array),
+        followings: expect.any(Array),
+        isAdmin: false,
+        profilePhoto: expect.any(Object)
       }
     });
   });
@@ -68,9 +74,15 @@ describe('/auth/login - Test Login Endpoint', () => {
       success: true,
       token: expect.any(String),
       user: {
-        id: expect.any(String),
+        _id: expect.any(String),
         username: payload.emailOrUsername,
-        email: expect.any(String)
+        email: expect.any(String),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        followers: expect.any(Array),
+        followings: expect.any(Array),
+        isAdmin: false,
+        profilePhoto: expect.any(Object)
       }
     });
   });
@@ -87,9 +99,15 @@ describe('/auth/login - Test Login Endpoint', () => {
       success: true,
       token: expect.any(String),
       user: {
-        id: expect.any(String),
+        _id: expect.any(String),
         username: expect.any(String),
-        email: payload.emailOrUsername
+        email: payload.emailOrUsername,
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        followers: expect.any(Array),
+        followings: expect.any(Array),
+        isAdmin: false,
+        profilePhoto: expect.any(Object)
       }
     });
   });

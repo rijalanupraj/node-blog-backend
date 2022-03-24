@@ -38,6 +38,13 @@ Router.delete('/:id', isAuth, postController.deletePost);
 Router.get('/:id', postController.getPostById);
 
 /*
+ * @route   GET /:slug
+ * @desc    Get Post By Slug
+ * @access  Public
+ */
+Router.get('/slug/:slug', postController.getPostBySlug);
+
+/*
  * @route   PUT /:id/like
  * @desc    Like Dislike Toggle
  * @access  Private

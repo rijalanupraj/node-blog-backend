@@ -218,6 +218,27 @@ const getPostById = asyncWrapper(async (req, res, next) => {
   });
 });
 
+// Get Post By Slug
+const getPostBySlug = asyncWrapper(async (req, res, next) => {
+  const { slug } = req.params;
+
+  const post = await Post.findOne({
+    slug: slug,
+    status: 'public',
+    isActive: true
+  }).populate('author');
+
+  if (!post) {
+    return next(new ExpressError('Post not found', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Post found successfully',
+    post
+  });
+});
+
 // Like Dislike
 const likeDislikeToggle = asyncWrapper(async (req, res, next) => {
   const { id } = req.user;
@@ -330,14 +351,18 @@ const getAllPublicPosts = asyncWrapper(async (req, res, next) => {
       categories: {
         $in: [findCategory._id]
       }
-    });
+    })
+      .populate('author')
+      .populate('categories');
   }
 
   if (!category) {
     posts = await Post.find({
       status: 'public',
       isActive: true
-    });
+    })
+      .populate('author')
+      .populate('categories');
   }
 
   return res.status(200).json({
@@ -352,6 +377,7 @@ module.exports = {
   updatePost,
   deletePost,
   getPostById,
+  getPostBySlug,
   likeDislikeToggle,
   getTimelinePosts,
   getAllPostsByUsername,

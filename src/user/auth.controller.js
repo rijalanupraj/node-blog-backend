@@ -35,11 +35,7 @@ const registerUser = asyncWrapper(async (req, res, next) => {
   res.status(201).json({
     success: true,
     token: `${token}`,
-    user: {
-      id: registeredUser.id,
-      username: registeredUser.username,
-      email: registeredUser.email
-    }
+    user: registeredUser.getPrivateProfile()
   });
 });
 
@@ -65,11 +61,7 @@ const loginUser = asyncWrapper(async (req, res, next) => {
   res.status(200).json({
     success: true,
     token: `${token}`,
-    user: {
-      id: currentUser.id,
-      username: currentUser.username,
-      email: currentUser.email
-    }
+    user: currentUser.getPrivateProfile()
   });
 });
 

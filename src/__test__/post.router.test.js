@@ -6,7 +6,6 @@ const fs = require('fs');
 // Internal Import
 const app = require('../app');
 const { APP } = require('../config/keys');
-const cloudinary = require('../config/cloudinary');
 
 const request = supertest(app);
 
@@ -25,6 +24,7 @@ afterAll(done => {
 });
 
 let POST_ID = '';
+let SLUG = '';
 describe('POST post/ - Create Post Test', () => {
   it('When the token is not provided', async () => {
     const response = await request.post(`${APP.BASE_API_URL}/post/`);
@@ -56,6 +56,7 @@ describe('POST post/ - Create Post Test', () => {
       .send(postPayload);
 
     expect(response.status).toBe(201);
+    SLUG = response.body.post.slug;
     expect(response.body).toEqual({
       success: true,
       message: expect.any(String),
@@ -112,6 +113,7 @@ describe('PUT post/:id - Update Post Test', () => {
       .send(updatedPayload);
 
     expect(response.status).toBe(200);
+    SLUG = response.body.post.slug;
     expect(response.body).toEqual({
       success: true,
       message: expect.any(String),
@@ -127,6 +129,47 @@ describe('PUT post/:id - Update Post Test', () => {
         comments: expect.any(Array),
         _id: expect.any(String),
         author: expect.any(String),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+        slug: expect.any(String),
+        __v: expect.any(Number)
+      }
+    });
+  });
+});
+
+describe('GET post/slug/:slug - Get Post By Slug Test', () => {
+  it('Should Return 200', async () => {
+    const response = await request.get(`${APP.BASE_API_URL}/post/slug/${SLUG}`);
+    expect(response.status).toBe(200);
+  });
+
+  it('Get 200 and update Post', async () => {
+    // Now we have the token, we can test create post
+    const response = await request.get(`${APP.BASE_API_URL}/post/slug/${SLUG}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      success: true,
+      message: expect.any(String),
+      post: {
+        title: expect.any(String),
+        content: expect.any(String),
+        status: expect.any(String),
+        image: expect.any(Object),
+        isActive: expect.any(Boolean),
+        allowComments: expect.any(Boolean),
+        likes: expect.any(Array),
+        categories: expect.any(Array),
+        comments: expect.any(Array),
+        _id: expect.any(String),
+        author: {
+          profilePhoto: expect.any(Object),
+          _id: expect.any(String),
+          username: expect.any(String),
+          followers: expect.any(Array),
+          followings: expect.any(Array)
+        },
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
         slug: expect.any(String),

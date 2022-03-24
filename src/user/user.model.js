@@ -63,6 +63,15 @@ userSchema.set('toJSON', {
   }
 });
 
+// Get public profile
+userSchema.methods.getPrivateProfile = function () {
+  const user = this;
+  const userObject = user.toObject();
+  delete userObject.password;
+  delete userObject.__v;
+  return userObject;
+};
+
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) return;
   const salt = await bcrypt.genSalt(8);
