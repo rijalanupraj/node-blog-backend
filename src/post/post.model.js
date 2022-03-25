@@ -1,17 +1,9 @@
 // External Import
 const mongoose = require('mongoose');
-const slug = require('mongoose-slug-generator');
+const URLSlugs = require('mongoose-url-slugs');
 
 // Schema
 const Schema = mongoose.Schema;
-
-// Slug Options
-const options = {
-  separator: '-',
-  lang: 'en',
-  truncate: 120
-};
-mongoose.plugin(slug, options);
 
 const PostSchema = new Schema(
   {
@@ -31,7 +23,6 @@ const PostSchema = new Schema(
     },
     slug: {
       type: String,
-      slug: 'title',
       unique: true
     },
     image: {
@@ -73,6 +64,8 @@ const PostSchema = new Schema(
     timestamps: true
   }
 );
+
+PostSchema.plugin(URLSlugs('title', { field: 'slug' }));
 
 // Post Model
 const Post = mongoose.model('Post', PostSchema);
