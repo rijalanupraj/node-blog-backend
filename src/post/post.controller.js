@@ -233,7 +233,8 @@ const getPostBySlug = asyncWrapper(async (req, res, next) => {
       populate: {
         path: 'author'
       }
-    });
+    })
+    .sort({ createdAt: -1 });
 
   if (!post) {
     return next(new ExpressError('Post not found', 404));
@@ -307,7 +308,9 @@ const getTimelinePosts = asyncWrapper(async (req, res, next) => {
         author: userId,
         status: 'public',
         isActive: true
-      }).populate('author');
+      })
+        .populate('author')
+        .sort({ createdAt: -1 });
     })
   );
 
@@ -333,7 +336,9 @@ const getAllPostsByUsername = asyncWrapper(async (req, res, next) => {
     author: findUser._id,
     status: 'public',
     isActive: true
-  }).populate('author');
+  })
+    .populate('author')
+    .sort({ createdAt: -1 });
 
   return res.status(200).json({
     success: true,
@@ -360,7 +365,8 @@ const getAllPublicPosts = asyncWrapper(async (req, res, next) => {
       }
     })
       .populate('author')
-      .populate('categories');
+      .populate('categories')
+      .sort({ createdAt: -1 });
   }
 
   if (!category) {
@@ -369,7 +375,8 @@ const getAllPublicPosts = asyncWrapper(async (req, res, next) => {
       isActive: true
     })
       .populate('author')
-      .populate('categories');
+      .populate('categories')
+      .sort({ createdAt: -1 });
   }
 
   return res.status(200).json({
@@ -393,7 +400,7 @@ const getMyPosts = asyncWrapper(async (req, res, next) => {
 
   const userPosts = await Post.find({
     author: findUser._id
-  });
+  }).sort({ createdAt: -1 });
 
   return res.status(200).json({
     success: true,
