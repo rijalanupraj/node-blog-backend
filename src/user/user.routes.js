@@ -38,6 +38,13 @@ Router.delete('/', isAuth, userController.deleteUser);
 Router.get('/:id', userController.getUserById);
 
 /*
+ * @route   GET /:username
+ * @desc    Get User By username
+ * @access  Public
+ */
+Router.get('/username/:username', userController.getUserByUsername);
+
+/*
  * @route   PUT /:id/follow
  * @desc    Follow User
  * @access  Private

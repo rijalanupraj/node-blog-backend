@@ -40,10 +40,12 @@ const createComment = asyncWrapper(async (req, res, next) => {
   findPost.comments.push(savedComment._id);
   await findPost.save();
 
+  const commentResponse = await savedComment.populate('author');
+
   res.status(201).json({
     success: true,
     message: 'Comment created successfully',
-    comment: savedComment
+    comment: commentResponse
   });
 });
 
@@ -72,12 +74,14 @@ const updateComment = asyncWrapper(async (req, res, next) => {
   }
 
   findComment.text = text;
-  await findComment.save();
+  const savedComment = await findComment.save();
+
+  const commentResponse = await savedComment.populate('author');
 
   res.status(200).json({
     success: true,
     message: 'Comment updated successfully',
-    comment: findComment
+    comment: commentResponse
   });
 });
 

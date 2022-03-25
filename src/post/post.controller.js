@@ -226,7 +226,14 @@ const getPostBySlug = asyncWrapper(async (req, res, next) => {
     slug: slug,
     status: 'public',
     isActive: true
-  }).populate('author');
+  })
+    .populate('author')
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'author'
+      }
+    });
 
   if (!post) {
     return next(new ExpressError('Post not found', 404));
@@ -300,7 +307,7 @@ const getTimelinePosts = asyncWrapper(async (req, res, next) => {
         author: userId,
         status: 'public',
         isActive: true
-      });
+      }).populate('author');
     })
   );
 
@@ -326,7 +333,7 @@ const getAllPostsByUsername = asyncWrapper(async (req, res, next) => {
     author: findUser._id,
     status: 'public',
     isActive: true
-  });
+  }).populate('author');
 
   return res.status(200).json({
     success: true,
@@ -372,6 +379,29 @@ const getAllPublicPosts = asyncWrapper(async (req, res, next) => {
   });
 });
 
+const getMyPosts = asyncWrapper(async (req, res, next) => {
+  const { id } = req.user;
+
+  if (!mongoId.isValid(id)) {
+    return next(new ExpressError('Invalid Id', 400));
+  }
+
+  const findUser = await User.findById(id);
+  if (!findUser) {
+    return next(new ExpressError('User not found', 404));
+  }
+
+  const userPosts = await Post.find({
+    author: findUser._id
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: 'Posts found successfully',
+    posts: userPosts
+  });
+});
+
 module.exports = {
   createPost,
   updatePost,
@@ -381,5 +411,6 @@ module.exports = {
   likeDislikeToggle,
   getTimelinePosts,
   getAllPostsByUsername,
-  getAllPublicPosts
+  getAllPublicPosts,
+  getMyPosts
 };

@@ -66,6 +66,13 @@ Router.get('/user/timeline', isAuth, postController.getTimelinePosts);
 Router.get('/profile/:username', postController.getAllPostsByUsername);
 
 /*
+ * @route   GET /current/my
+ * @desc    Get All Post of the current user
+ * @access  Private
+ */
+Router.get('/user/my', isAuth, postController.getMyPosts);
+
+/*
  * @route   GET /posts
  * @desc    Get All Public Posts
  * @access  Public

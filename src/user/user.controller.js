@@ -94,6 +94,24 @@ const getUserById = asyncWrapper(async (req, res, next) => {
   });
 });
 
+// Get User By Username
+const getUserByUsername = asyncWrapper(async (req, res, next) => {
+  const { username } = req.params;
+
+  const user = await User.findOne({
+    username: username
+  });
+  if (!user) {
+    return next(new ExpressError('User not found', 404));
+  }
+
+  return res.status(200).json({
+    success: true,
+    user: user,
+    message: 'User found successfully'
+  });
+});
+
 // Follow User
 const followUser = asyncWrapper(async (req, res, next) => {
   const { id } = req.user;
@@ -264,6 +282,7 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserById,
+  getUserByUsername,
   followUser,
   unFollowUser,
   updateProfilePicture,

@@ -76,7 +76,7 @@ describe('POST comment/post/:postId - Create Category Test', () => {
       message: expect.any(String),
       comment: {
         text: commentPayload.text,
-        author: expect.any(String),
+        author: expect.any(Object),
         __v: expect.any(Number),
         isActive: expect.any(Boolean),
         createdAt: expect.any(String),
@@ -104,7 +104,7 @@ describe('PUT comment/ - Update All Comments', () => {
       message: expect.any(String),
       comment: {
         text: commentPayload.text,
-        author: expect.any(String),
+        author: expect.any(Object),
         __v: expect.any(Number),
         isActive: expect.any(Boolean),
         createdAt: expect.any(String),

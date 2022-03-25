@@ -2,6 +2,8 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+const morgan = require('morgan');
+const sanitize = require('express-mongo-sanitize');
 
 // Internal Import
 const v1Routes = require('./routes/v1');
@@ -16,8 +18,10 @@ require('./config/passport')(app);
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(helmet());
 app.use(cors());
+app.use(helmet());
+app.use(sanitize());
+app.use(morgan('dev'));
 
 // Routes
 app.use(`${APP.BASE_API_URL}`, v1Routes);
