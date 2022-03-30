@@ -7,19 +7,22 @@ const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      max: 30,
+      maxlength: 30,
+      trim: true,
+      minlength: 6,
       unique: true,
       required: true
     },
     email: {
       type: String,
+      trim: true,
       unique: true,
       required: true
     },
     password: {
       type: String,
       required: true,
-      minlength: 6
+      minlength: 4
     },
     profilePhoto: {
       hasPhoto: {
