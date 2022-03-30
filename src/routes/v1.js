@@ -7,6 +7,7 @@ const userRoutes = require('../user/user.routes');
 const postRoutes = require('../post/post.routes');
 const categoryRoutes = require('../category/category.routes');
 const commentRoutes = require('../comment/comment.routes');
+const chatRoutes = require('../chat/chat.routes');
 
 // Auth Routes
 router.use('/auth', authRoutes);
@@ -22,6 +23,9 @@ router.use('/category', categoryRoutes);
 
 // Comment Routes
 router.use('/comment', commentRoutes);
+
+// Chat Routes
+router.use('/chat', chatRoutes);
 
 // Test Route for Checking whether the app is working or not
 router.use('/test', (req, res) => {
