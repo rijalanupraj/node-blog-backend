@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       maxlength: 30,
       trim: true,
-      minlength: 6,
+      minlength: 4,
       unique: true,
       required: true
     },
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      minlength: 4
+      minlength: 6
     },
     profilePhoto: {
       hasPhoto: {
