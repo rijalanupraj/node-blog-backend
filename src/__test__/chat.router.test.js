@@ -95,19 +95,17 @@ describe('GET chat/conversations - Get All Conversation of the current User', ()
   });
 });
 
-describe('GET chat/messages - Get Chat Messages from Conversation', () => {
+describe('GET chat/messages/:conversationId - Get Chat Messages from Conversation', () => {
   it('When the token is not provided', async () => {
-    const response = await request.get(`${APP.BASE_API_URL}/chat/messages`);
+    const response = await request.get(`${APP.BASE_API_URL}/chat/messages/${CONVERSATION_ID}`);
+    console.log(response.body);
     expect(response.status).toBe(401);
   });
 
   it('Create Messages of a certain conversation with 200 status code', async () => {
     const response = await request
-      .get(`${APP.BASE_API_URL}/chat/messages`)
-      .set('Authorization', `Bearer ${FIRST_USER_TOKEN}`)
-      .send({
-        conversationId: CONVERSATION_ID
-      });
+      .get(`${APP.BASE_API_URL}/chat/messages/${CONVERSATION_ID}`)
+      .set('Authorization', `Bearer ${FIRST_USER_TOKEN}`);
 
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
@@ -117,13 +115,13 @@ describe('GET chat/messages - Get Chat Messages from Conversation', () => {
 
 describe('GET chat/messages/unseen - Get Unseen Messages from Conversation', () => {
   it('When the token is not provided', async () => {
-    const response = await request.get(`${APP.BASE_API_URL}/chat/messages/unseen`);
+    const response = await request.get(`${APP.BASE_API_URL}/chat/unseen/messages`);
     expect(response.status).toBe(401);
   });
 
   it('Unseen Messages of a User with 200 status code', async () => {
     const response = await request
-      .get(`${APP.BASE_API_URL}/chat/messages/unseen`)
+      .get(`${APP.BASE_API_URL}/chat/unseen/messages`)
       .set('Authorization', `Bearer ${FIRST_USER_TOKEN}`);
 
     expect(response.status).toBe(200);

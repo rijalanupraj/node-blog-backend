@@ -27,13 +27,13 @@ Router.get('/conversations', isAuth, chatController.getConversation);
  * @desc    Get Messages
  * @access  Private
  */
-Router.get('/messages', isAuth, chatController.getMessages);
+Router.get('/messages/:conversationId', isAuth, chatController.getMessages);
 
 /*
  * @route   GET /
  * @desc    Get Unseen Messages
  * @access  Private
  */
-Router.get('/messages/unseen', isAuth, chatController.getUnseenMessages);
+Router.get('/unseen/messages', isAuth, chatController.getUnseenMessages);
 
 module.exports = Router;

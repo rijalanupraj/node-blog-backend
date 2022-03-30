@@ -103,7 +103,7 @@ const getConversation = asyncWrapper(async (req, res, next) => {
 // Get Messages
 const getMessages = asyncWrapper(async (req, res, next) => {
   const { id } = req.user;
-  const { conversationId } = req.body;
+  const { conversationId } = req.params;
 
   if (!mongoId.isValid(id) || !mongoId.isValid(conversationId)) {
     return next(new ExpressError('Invalid Id', 400));
