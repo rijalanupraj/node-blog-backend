@@ -3,10 +3,11 @@ const socket = require('socket.io');
 
 // Internal Import
 const Message = require('./message.model');
+const { APP } = require('../config/keys');
 
 const mySocket = server => {
   const io = socket(server, {
-    cors: { origin: 'http://localhost:3000' }
+    cors: { origin: APP.FRONT_END_URL }
   });
   let users = {};
 

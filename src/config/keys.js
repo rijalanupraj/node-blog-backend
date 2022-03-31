@@ -1,7 +1,8 @@
 module.exports = {
   APP: {
     NAME: 'Node Blog',
-    BASE_API_URL: process.env.BASE_API_URL || '/api/v1'
+    BASE_API_URL: process.env.BASE_API_URL || '/api/v1',
+    FRONT_END_URL: process.env.FRONT_END_URL || 'http://localhost:3000'
   },
   PORT: process.env.PORT || 8000,
   DATABASE: {
