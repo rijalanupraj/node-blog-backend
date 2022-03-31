@@ -21,7 +21,6 @@ Router.post('/create', isAuth, chatController.createConversation);
  * @access  Private
  */
 Router.get('/conversations', isAuth, chatController.getConversation);
-
 /*
  * @route   GET /
  * @desc    Get Messages

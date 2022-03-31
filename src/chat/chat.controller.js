@@ -125,13 +125,14 @@ const getMessages = asyncWrapper(async (req, res, next) => {
     return next(new ExpressError('User is not a participant', 404));
   }
 
-  const messages = await Message.find({ conversationId: getConversation._id }).sort({
+  const messages = await Message.find({ conversation: getConversation._id }).sort({
     createdAt: 'desc'
   });
 
   res.status(200).json({
     success: true,
-    messages
+    messages,
+    conversation: getConversation
   });
 });
 
